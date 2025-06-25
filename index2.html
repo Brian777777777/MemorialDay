@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在一起的时光 - 回忆版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.5;
+            }
+        }
+
+        .photo-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .flying-photo {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes flyToCenter {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotate(-90deg);
+            }
+
+            15% {
+                opacity: 0.8;
+                transform: scale(0.9) rotate(-45deg);
+            }
+
+            40% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1) rotate(15deg);
+            }
+
+            85% {
+                opacity: 0.9;
+                transform: scale(0.8) rotate(30deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.4) rotate(45deg);
+            }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: containerPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes containerPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+
+            to {
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 120px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .time-unit:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .time-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            animation: numberPulse 1s ease-in-out infinite;
+            display: block;
+        }
+
+        @keyframes numberPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .time-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .time-number {
+                font-size: 2rem;
+            }
+
+            .time-unit {
+                min-width: 80px;
+                padding: 15px;
+            }
+
+            .time-display {
+                gap: 15px;
+            }
+
+            .flying-photo {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="photo-container" id="photoContainer"></div>
+
+    <div class="container">
+        <h1 class="title">我们在一起</h1>
+
+        <div class="time-display">
+            <div class="time-unit">
+                <span class="time-number" id="days">0</span>
+                <div class="time-label">天</div>
+            </div>
+            <div class="time-unit">
+                <span class="time-number" id="hours">0</span>
+                <div class="time-label">小时</div>
+            </div>
+            <div class="time-unit">
+                <span class="time-number" id="minutes">0</span>
+                <div class="time-label">分钟</div>
+            </div>
+            <div class="time-unit">
+                <span class="time-number" id="seconds">0</span>
+                <div class="time-label">秒</div>
+            </div>
+        </div>
+
+        <p class="subtitle">每一秒都是珍贵的回忆</p>
+    </div>
+
+    <script>
+        // 设置开始时间 - 请修改为您的纪念日期
+        const startDate = new Date('2021-04-21 00:00:00');
+
+        // 照片动画开关 - 设置为 false 可以禁用照片动画
+        const enablePhotoAnimation = true;
+
+        // 示例照片数组 - 您可以替换为真实的照片URL，或设置为空数组 [] 来禁用照片
+        const photoUrls = [
+
+        ];
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function createFlyingPhoto() {
+            // 检查照片动画是否启用
+            if (!enablePhotoAnimation) {
+                return; // 如果照片动画被禁用，直接返回
+            }
+
+            // 检查是否有可用的照片
+            if (!photoUrls || photoUrls.length === 0) {
+                return; // 如果没有照片，直接返回
+            }
+
+            const photoContainer = document.getElementById('photoContainer');
+            const photo = document.createElement('div');
+            photo.className = 'flying-photo';
+
+            // 随机选择照片
+            const randomPhoto = photoUrls[Math.floor(Math.random() * photoUrls.length)];
+
+            // 检查照片URL是否有效
+            if (!randomPhoto || randomPhoto.trim() === '') {
+                return; // 如果照片URL为空，直接返回
+            }
+
+            // 创建图片对象来检测照片是否能正常加载
+            const img = new Image();
+            img.onload = function () {
+                // 照片加载成功，继续创建动画
+                photo.style.backgroundImage = `url(${randomPhoto})`;
+                startPhotoAnimation(photo, photoContainer);
+            };
+            img.onerror = function () {
+                // 照片加载失败，不显示这张照片
+                console.log('照片加载失败:', randomPhoto);
+                return;
+            };
+            img.src = randomPhoto;
+        }
+
+        function startPhotoAnimation(photo, photoContainer) {
+            // 随机起始位置（四个边）
+            const side = Math.floor(Math.random() * 4);
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            let startX, startY, endX, endY;
+
+            switch (side) {
+                case 0: // 从上边
+                    startX = Math.random() * window.innerWidth;
+                    startY = -100;
+                    break;
+                case 1: // 从右边
+                    startX = window.innerWidth + 100;
+                    startY = Math.random() * window.innerHeight;
+                    break;
+                case 2: // 从下边
+                    startX = Math.random() * window.innerWidth;
+                    startY = window.innerHeight + 100;
+                    break;
+                case 3: // 从左边
+                    startX = -100;
+                    startY = Math.random() * window.innerHeight;
+                    break;
+            }
+
+            // 终点是屏幕中心附近的随机位置
+            endX = centerX + (Math.random() - 0.5) * 200;
+            endY = centerY + (Math.random() - 0.5) * 200;
+
+            photo.style.left = startX + 'px';
+            photo.style.top = startY + 'px';
+
+            // 设置CSS变量用于动画
+            photo.style.setProperty('--start-x', startX + 'px');
+            photo.style.setProperty('--start-y', startY + 'px');
+            photo.style.setProperty('--end-x', endX + 'px');
+            photo.style.setProperty('--end-y', endY + 'px');
+
+            // 创建动态动画
+            const keyframes = `
+                @keyframes flyToCenter-${Date.now()} {
+                    0% {
+                        left: ${startX}px;
+                        top: ${startY}px;
+                        opacity: 0;
+                        transform: scale(0.5) rotate(-90deg);
+                    }
+                    15% {
+                        opacity: 0.8;
+                        transform: scale(0.9) rotate(-45deg);
+                    }
+                    40% {
+                        left: ${endX}px;
+                        top: ${endY}px;
+                        opacity: 1;
+                        transform: scale(1) rotate(0deg);
+                    }
+                    70% {
+                        opacity: 1;
+                        transform: scale(1) rotate(15deg);
+                    }
+                    85% {
+                        opacity: 0.9;
+                        transform: scale(0.8) rotate(30deg);
+                    }
+                    100% {
+                        left: ${endX}px;
+                        top: ${endY}px;
+                        opacity: 0;
+                        transform: scale(0.4) rotate(45deg);
+                    }
+                }
+            `;
+
+            // 添加动画样式
+            const style = document.createElement('style');
+            style.textContent = keyframes;
+            document.head.appendChild(style);
+
+            const animationName = `flyToCenter-${Date.now()}`;
+            photo.style.animation = `${animationName} 7s ease-in-out forwards`;
+
+            photoContainer.appendChild(photo);
+
+            // 动画结束后移除元素
+            setTimeout(() => {
+                if (photo.parentNode) {
+                    photo.parentNode.removeChild(photo);
+                }
+                if (style.parentNode) {
+                    style.parentNode.removeChild(style);
+                }
+            }, 7000);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeDiff = now - startDate;
+
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            // 数字跳动效果
+            animateNumber('days', days);
+            animateNumber('hours', hours);
+            animateNumber('minutes', minutes);
+            animateNumber('seconds', seconds);
+        }
+
+        function animateNumber(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent);
+
+            if (currentValue !== newValue) {
+                element.style.transform = 'scale(1.2)';
+                element.style.color = '#ffff00';
+
+                setTimeout(() => {
+                    element.textContent = newValue;
+                    element.style.transform = 'scale(1)';
+                    element.style.color = 'white';
+                }, 150);
+            }
+        }
+
+        // 初始化
+        createParticles();
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // 每5秒创建一张飞行的照片
+        setInterval(createFlyingPhoto, 5000);
+
+        // 2秒后创建第一张照片
+        setTimeout(createFlyingPhoto, 2000);
+    </script>
+</body>
+
+</html>
